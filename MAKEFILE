@@ -1,0 +1,26 @@
+# Makefile for automating PyPI package uploads
+
+PACKAGE_NAME = psusannx-betfair
+
+# By declaring these targets as phony, Make knows that they don't represent files
+# If it thought they were files it could mess things up when running the make file
+.PHONY: clean build publish commit push
+
+clean:
+	del /s /q build dist *.egg-info
+
+build:
+	python setup.py sdist bdist_wheel
+
+commit:
+	git add *
+	git commit -m 'Update the package version & publishing to pypi'
+
+push:
+	git push
+
+publish: clean build 
+	python -m twine upload dist/*
+
+push_publish: clean build commit push
+	python -m twine upload dist/*

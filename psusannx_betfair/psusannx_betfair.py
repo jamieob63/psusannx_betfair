@@ -204,7 +204,7 @@ class PsusannxBetfair():
             print(f"There is no match between {home_team} & {away_team} in the available matches on the betfair exchange.\nReturning a dataframe with NA's")
             
             # Create a dataframe with missing odds values
-            na_df = pd.DataFrame({
+            self.odds_df = pd.DataFrame({
                     "Home_team": home_team,
                     "Away_team": away_team,
                     "Home_odds": np.nan,
@@ -212,9 +212,9 @@ class PsusannxBetfair():
                     "Away_odds": np.nan,
                     "Approx_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 }, index=[0]
-            )
+            ).replace(self.team_mapping)
             
-            return na_df
+            return self.odds_df
         
         # List all the possible betting markets for that event
         list_betting_markets_request = '{"jsonrpc": "2.0", "method": "SportsAPING/v1.0/listMarketCatalogue", "params": {"filter":{"eventIds":["' + current_match_event_id + '"]},"maxResults":"100"}, "id": 1}'
@@ -265,13 +265,26 @@ class PsusannxBetfair():
         approx_time = (datetime.now() - timedelta(minutes=3)).strftime("%Y-%m-%d %H:%M:%S")
 
         # Create the odds dataframe with the betfair odds
-        odds_df = pd.DataFrame({
+        self.odds_df = pd.DataFrame({
             "Home_team": home_team,
             "Away_team": away_team,
             "Home_odds": home_odds,
             "Draw_odds": draw_odds,
             "Away_odds": away_odds,
             "Approx_time": approx_time
-        }, index=[0]).replace(self.team_mapping)
+            }, index=[0]
+        ).replace(self.team_mapping)
 
-        return odds_df
+        return self.odds_df
+    
+    def create_betfair_ex_odds_data_string(self):
+        """Create the Betfair Exchange odds data string"""
+
+        # Extract the data from the current match odds df to create the string
+        home_team, away_team, home_odds, draw_odds, away_odds = self.odds_df.values[0]
+        
+        # Create the odds output string
+        odds_data_string = f"\n-> Betfair Exchange Odds Info:\n\n{home_team}: {home_odds}\nDraw: {draw_odds}\n{away_team}: {away_odds}\n"
+
+        return odds_data_string
+

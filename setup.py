@@ -12,7 +12,7 @@ setup(
     description="A package with functions for getting Betfair Exchange odds on upcoming Premier League matches.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version="0.0.2",
+    version="0.0.3",
     packages=find_packages(include=["psusannx_betfair", "psusannx_betfair.*"]),
     install_requires=[
         "numpy", 

@@ -277,11 +277,12 @@ class PsusannxBetfair():
 
         return self.odds_df
     
+
     def create_betfair_ex_odds_data_string(self):
         """Create the Betfair Exchange odds data string"""
 
         # Extract the data from the current match odds df to create the string
-        home_team, away_team, home_odds, draw_odds, away_odds = self.odds_df.values[0]
+        home_team, away_team, home_odds, draw_odds, away_odds = self.odds_df[["Home_team", "Away_team", "Home_odds", "Draw_odds", "Away_odds"]].values[0]
         
         # Create the odds output string
         odds_data_string = f"\n-> Betfair Exchange Odds Info:\n\n{home_team}: {home_odds}\nDraw: {draw_odds}\n{away_team}: {away_odds}\n"
